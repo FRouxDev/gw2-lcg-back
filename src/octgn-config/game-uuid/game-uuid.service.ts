@@ -10,7 +10,7 @@ export class GameUUidService {
 
   resetGameUuid(): void {}
 
-  changeGameUuid(uuid: string) {
+  changeGameUuid(uuid: string): GameUUidInterface {
     return { uuid };
   }
 

@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller('sets')
-export class SetsController {}
+export class SetsController {
+  @Get()
+  getSets() {
+    return { msg: 'Ok' };
+  }
+}

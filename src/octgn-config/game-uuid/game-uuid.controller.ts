@@ -9,13 +9,13 @@ export class GameUuidController {
   constructor(private gameUuidService: GameUUidService) {}
 
   @Get()
-  gameUuidExists(): { exists: boolean } {
+  gameUuidExists() {
     const doesUuidExists: boolean = this.gameUuidService.gameUuidExists();
     return { exists: doesUuidExists };
   }
 
   @Post()
-  createGameUUid(@Body() { uuid }: GameUUidDto): GameUUidInterface {
+  createGameUUid(@Body() { uuid }: GameUUidDto) {
     if (isValidUUIDV4(uuid)) {
       const gameUuid = this.gameUuidService.setGameUuid(uuid);
       return gameUuid;
@@ -25,7 +25,7 @@ export class GameUuidController {
   }
 
   @Put()
-  changeGameUUid(@Body() { uuid }: GameUUidDto): GameUUidInterface {
+  changeGameUUid(@Body() { uuid }: GameUUidDto) {
     if (isValidUUIDV4(uuid)) {
       const gameUuid = this.gameUuidService.changeGameUuid(uuid);
       return gameUuid;
@@ -35,7 +35,7 @@ export class GameUuidController {
   }
 
   @Delete()
-  deleteGameUUId(): void {
+  deleteGameUUId() {
     this.gameUuidService.resetGameUuid();
   }
 }
