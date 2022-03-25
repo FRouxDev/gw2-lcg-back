@@ -9,15 +9,15 @@ export class GameUuidController {
   constructor(private gameUuidService: GameUUidService) {}
 
   @Get()
-  gameUuidExists() {
-    const doesUuidExists: boolean = this.gameUuidService.gameUuidExists();
+  async gameUuidExists() {
+    const doesUuidExists = await this.gameUuidService.gameUuidExists();
     return { exists: doesUuidExists };
   }
 
   @Post()
-  createGameUUid(@Body() { uuid }: GameUUidDto) {
+  async createGameUUid(@Body() { uuid }: GameUUidDto) {
     if (isValidUUIDV4(uuid)) {
-      const gameUuid = this.gameUuidService.setGameUuid(uuid);
+      const gameUuid = await this.gameUuidService.upsertGameUuid(uuid);
       return gameUuid;
     } else {
       throw new HttpException(`Error: ${uuid} is not a valid uuid.`, HttpStatus.BAD_REQUEST);
@@ -25,9 +25,9 @@ export class GameUuidController {
   }
 
   @Put()
-  changeGameUUid(@Body() { uuid }: GameUUidDto) {
+  async changeGameUUid(@Body() { uuid }: GameUUidDto) {
     if (isValidUUIDV4(uuid)) {
-      const gameUuid = this.gameUuidService.changeGameUuid(uuid);
+      const gameUuid = await this.gameUuidService.upsertGameUuid(uuid);
       return gameUuid;
     } else {
       throw new HttpException(`Error: ${uuid} is not a valid uuid.`, HttpStatus.BAD_REQUEST);

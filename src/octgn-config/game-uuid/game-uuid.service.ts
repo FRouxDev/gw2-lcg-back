@@ -1,20 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { isValidUUIDV4 } from 'is-valid-uuid-v4';
+import { InjectRepository } from '@nestjs/typeorm';
+import { userInfo } from 'os';
+import { Repository } from 'typeorm';
+import { OctgnConfigInterface } from '../octgn-config.interface';
+import { OctgnConfig } from './entities/octgn.entity';
 import { GameUUidInterface } from './game-uuid.interface';
 
 @Injectable()
 export class GameUUidService {
-  setGameUuid(uuid: string): GameUUidInterface {
-    return { uuid };
+  constructor(
+    @InjectRepository(OctgnConfig)
+    private configRepository: Repository<OctgnConfig>,
+  ) {}
+
+  async upsertGameUuid(uuid: string): Promise<GameUUidInterface> {
+    const configObj: OctgnConfigInterface = { key: 'uuid', value: uuid };
+    const newUuid: OctgnConfig = await this.configRepository.save(configObj);
+    return { uuid: newUuid.value };
   }
 
-  resetGameUuid(): void {}
-
-  changeGameUuid(uuid: string): GameUUidInterface {
-    return { uuid };
+  async resetGameUuid(): Promise<void> {
+    await this.configRepository.delete({
+      key: 'uuid',
+    });
   }
 
-  gameUuidExists(): boolean {
-    return true;
+  async gameUuidExists(): Promise<boolean> {
+    const gameUUidConfig = await this.configRepository.findOne({
+      where: {
+        key: 'uuid',
+      },
+    });
+    return !!gameUUidConfig;
   }
 }
