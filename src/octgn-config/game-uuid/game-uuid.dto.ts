@@ -1,3 +1,3 @@
-export class GameUUidDto {
+export interface GameUUidDto {
   uuid: string;
 }

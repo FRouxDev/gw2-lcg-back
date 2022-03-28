@@ -9,6 +9,7 @@ import { OctgnConfigModule } from './octgn-config/octgn-config.module';
 import DEFAULT_PASSWORD from './data';
 import { CardsModule } from './cards/cards.module';
 import { SetsModule } from './sets/sets.module';
+import { CardSet } from './sets/entities/sets.entities';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { SetsModule } from './sets/sets.module';
       username: 'root',
       password: DEFAULT_PASSWORD,
       database: 'gw2_lcg',
-      entities: [OctgnConfig],
+      entities: [OctgnConfig, CardSet],
       synchronize: true,
     }),
     OctgnConfigModule,

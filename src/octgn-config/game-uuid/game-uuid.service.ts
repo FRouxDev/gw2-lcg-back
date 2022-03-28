@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { userInfo } from 'os';
 import { Repository } from 'typeorm';
 import { OctgnConfigInterface } from '../octgn-config.interface';
 import { OctgnConfig } from './entities/octgn.entity';
