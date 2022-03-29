@@ -1,4 +1,4 @@
-import { SetType } from './entities/sets.entities';
+import { SetType } from 'src/shared/types/setType.type';
 
 export interface CardSetDto {
   name: string;

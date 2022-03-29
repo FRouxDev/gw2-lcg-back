@@ -1,10 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
-
-export enum SetType {
-  PLAYER = 'player',
-  ENCOUNTER = 'encounter',
-  SPECIAL = 'special',
-}
+import { Card } from 'src/cards/entities/cards.entity';
+import { Entity, Column, PrimaryGeneratedColumn, TableInheritance, OneToMany } from 'typeorm';
+import { SetType } from 'src/shared/types/setType.type';
 
 @Entity()
 export class CardSet {
@@ -20,4 +16,7 @@ export class CardSet {
     default: SetType.ENCOUNTER,
   })
   type: SetType;
+
+  @OneToMany(() => Card, (card) => card.set)
+  cards: Card[];
 }
