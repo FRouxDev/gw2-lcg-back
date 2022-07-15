@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CardsController } from './cards.controller';
 import { CardsService } from './cards.service';
-import { Card } from './entities/cards.entity';
+import { Ally, Attachment, Card, Enemy, Hero, Location, Quest, Treachery } from './entities/cards.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Card])],
+  imports: [TypeOrmModule.forFeature([Card, Hero, Ally, Event, Attachment, Enemy, Treachery, Location, Quest])],
   controllers: [CardsController],
   providers: [CardsService],
 })

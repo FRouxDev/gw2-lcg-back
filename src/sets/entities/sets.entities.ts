@@ -1,11 +1,11 @@
 import { Card } from 'src/cards/entities/cards.entity';
-import { Entity, Column, PrimaryGeneratedColumn, TableInheritance, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SetType } from 'src/shared/types/setType.type';
 
 @Entity()
 export class CardSet {
-  @PrimaryGeneratedColumn('uuid')
-  uuid: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;

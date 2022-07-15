@@ -1,8 +1,11 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class OctgnConfig {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   key: string;
 
   @Column()

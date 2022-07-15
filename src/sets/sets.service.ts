@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository, ObjectID } from 'typeorm';
+import { MongoFindOneOptions } from 'typeorm/find-options/mongodb/MongoFindOneOptions';
 import { CardSet } from './entities/sets.entities';
 import { CardSetDto } from './sets.dto';
-import { CardSetInterface } from './sets.interface';
-
 @Injectable()
 export class SetsService {
   constructor(
     @InjectRepository(CardSet)
-    private setsRepository: Repository<CardSet>,
+    private setsRepository: MongoRepository<CardSet>,
   ) {}
 
   async createSet({ name, type }: CardSetDto): Promise<CardSet> {
@@ -17,14 +16,12 @@ export class SetsService {
     return newSet;
   }
 
-  async deleteSet(uuid: string): Promise<void> {
-    await this.setsRepository.delete({ uuid });
+  async deleteSet(id: ObjectID): Promise<void> {
+    await this.setsRepository.delete(id);
   }
 
-  async getSet(uuid: string): Promise<CardSet> {
-    const cardSet: CardSet = await this.setsRepository.findOne({
-      where: { uuid },
-    });
+  async getSet(id: ObjectID): Promise<CardSet> {
+    const cardSet: CardSet = await this.setsRepository.findOne(id as MongoFindOneOptions<CardSet>);
     return cardSet;
   }
 

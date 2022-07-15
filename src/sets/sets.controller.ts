@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
+import { ObjectID } from 'typeorm';
 import { CardSetDto } from './sets.dto';
 import { SetsService } from './sets.service';
 
@@ -6,9 +7,9 @@ import { SetsService } from './sets.service';
 export class SetsController {
   constructor(private setsService: SetsService) {}
 
-  @Get(':uuid')
+  @Get(':id')
   async getSet(@Param() params) {
-    const cardSet = await this.setsService.getSet(params.uuid);
+    const cardSet = await this.setsService.getSet(params.id);
     return cardSet;
   }
 
@@ -24,18 +25,8 @@ export class SetsController {
     return newSet;
   }
 
-  /* @Put()
-  async changeGameUUid(@Body() { uuid }: GameUUidDto) {
-    if (isValidUUIDV4(uuid)) {
-      const gameUuid = await this.gameUuidService.upsertGameUuid(uuid);
-      return gameUuid;
-    } else {
-      throw new HttpException(`Error: ${uuid} is not a valid uuid.`, HttpStatus.BAD_REQUEST);
-    }
-  } */
-
-  @Delete(':uuid')
+  @Delete(':id')
   deleteSet(@Param() params) {
-    this.setsService.deleteSet(params.uuid);
+    this.setsService.deleteSet(params.id);
   }
 }
