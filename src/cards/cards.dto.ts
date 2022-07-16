@@ -2,6 +2,7 @@ import { CardSet } from 'src/sets/entities/sets.entities';
 import { Sphere } from 'src/shared/types/sphere.type';
 
 export interface CardDto {
+  uuid?: string;
   name: string;
   set: CardSet;
   traits: string[];

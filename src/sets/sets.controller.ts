@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
-import { ObjectID } from 'typeorm';
 import { CardSetDto } from './sets.dto';
 import { SetsService } from './sets.service';
+import { randomUUID } from 'crypto';
 
 @Controller('sets')
 export class SetsController {
   constructor(private setsService: SetsService) {}
 
-  @Get(':id')
+  @Get(':uuid')
   async getSet(@Param() params) {
-    const cardSet = await this.setsService.getSet(params.id);
+    const cardSet = await this.setsService.getSet(params.uuid);
     return cardSet;
   }
 
@@ -21,12 +21,14 @@ export class SetsController {
 
   @Post()
   async createSet(@Body() { name, type }: CardSetDto) {
-    const newSet = await this.setsService.createSet({ name, type });
+    const uuid = randomUUID();
+    console.log(uuid);
+    const newSet = await this.setsService.createSet({ name, type, uuid });
     return newSet;
   }
 
-  @Delete(':id')
+  @Delete(':uuid')
   deleteSet(@Param() params) {
-    this.setsService.deleteSet(params.id);
+    this.setsService.deleteSet(params.uuid);
   }
 }

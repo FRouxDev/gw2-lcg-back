@@ -1,11 +1,11 @@
 import { CardSet } from 'src/sets/entities/sets.entities';
-import { Entity, Column, TableInheritance, ManyToOne, PrimaryGeneratedColumn, ChildEntity } from 'typeorm';
+import { Entity, Column, TableInheritance, ManyToOne, PrimaryColumn, ChildEntity } from 'typeorm';
 import { Sphere } from 'src/shared/types/sphere.type';
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class Card {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  uuid: string;
 
   @Column()
   name: string;

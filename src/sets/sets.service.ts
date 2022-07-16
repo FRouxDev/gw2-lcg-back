@@ -11,8 +11,8 @@ export class SetsService {
     private setsRepository: MongoRepository<CardSet>,
   ) {}
 
-  async createSet({ name, type }: CardSetDto): Promise<CardSet> {
-    const newSet: CardSet = await this.setsRepository.save({ name, type });
+  async createSet({ name, type, uuid }: CardSetDto): Promise<CardSet> {
+    const newSet: CardSet = await this.setsRepository.save({ name, type, uuid });
     return newSet;
   }
 

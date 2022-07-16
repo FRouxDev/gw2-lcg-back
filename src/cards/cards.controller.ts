@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { AllyDto, CardDto, HeroDto } from './cards.dto';
+import { CardDto } from './cards.dto';
+import { randomUUID } from 'crypto';
 import { CardsService } from './cards.service';
 
 @Controller('cards')
@@ -20,12 +21,13 @@ export class CardsController {
 
   @Post()
   async createCard(@Body() card: CardDto) {
+    card.uuid = randomUUID();
     const newCard = await this.cardsService.createCard(card);
     return newCard;
   }
 
-  @Delete(':id')
+  @Delete(':uuid')
   deleteCard(@Param() params) {
-    this.cardsService.deleteCard(params.id);
+    this.cardsService.deleteCard(params.uuid);
   }
 }

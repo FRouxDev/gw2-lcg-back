@@ -53,13 +53,13 @@ export class CardsService {
   }
 
   async getAllCards(): Promise<Array<Card>> {
-    const cards: Array<Card> = await this.cardsRepository.find();
+    const cards: Array<Card> = await this.cardsRepository.find({ relations: ['set'] });
     return cards;
   }
 
   async getAllCardsFromType(type: string): Promise<Array<Card>> {
     const cardsRepository = this.getRepository(type);
-    const cards: Array<Card> = await cardsRepository.find();
+    const cards: Array<Card> = await cardsRepository.find({ relations: ['set'] });
     return cards;
   }
 }
