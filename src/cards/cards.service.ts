@@ -48,8 +48,8 @@ export class CardsService {
     return newCard;
   }
 
-  async deleteCard(id: number): Promise<void> {
-    await this.cardsRepository.delete(id);
+  async deleteCard(uuid: string): Promise<void> {
+    await this.cardsRepository.delete(uuid);
   }
 
   async getAllCards(): Promise<Array<Card>> {

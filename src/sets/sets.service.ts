@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository, ObjectID } from 'typeorm';
-import { MongoFindOneOptions } from 'typeorm/find-options/mongodb/MongoFindOneOptions';
+import { Repository } from 'typeorm';
 import { CardSet } from './entities/sets.entities';
 import { CardSetDto } from './sets.dto';
 @Injectable()
 export class SetsService {
   constructor(
     @InjectRepository(CardSet)
-    private setsRepository: MongoRepository<CardSet>,
+    private setsRepository: Repository<CardSet>,
   ) {}
 
   async createSet({ name, type, uuid }: CardSetDto): Promise<CardSet> {
@@ -16,17 +15,17 @@ export class SetsService {
     return newSet;
   }
 
-  async deleteSet(id: ObjectID): Promise<void> {
-    await this.setsRepository.delete(id);
+  async deleteSet(uuid: string): Promise<void> {
+    await this.setsRepository.delete(uuid);
   }
 
-  async getSet(id: ObjectID): Promise<CardSet> {
-    const cardSet: CardSet = await this.setsRepository.findOne(id as MongoFindOneOptions<CardSet>);
+  async getSet(uuid: string): Promise<CardSet> {
+    const cardSet: CardSet = await this.setsRepository.findOne({ where: { uuid }, relations: ['cards'] });
     return cardSet;
   }
 
   async getAllSets(): Promise<Array<CardSet>> {
-    const cardSets: Array<CardSet> = await this.setsRepository.find();
+    const cardSets: Array<CardSet> = await this.setsRepository.find({ relations: ['cards'] });
     return cardSets;
   }
 }

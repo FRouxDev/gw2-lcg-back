@@ -20,9 +20,9 @@ export class SetsController {
   }
 
   @Post()
-  async createSet(@Body() { name, type }: CardSetDto) {
+  async createSet(@Body() { data }: { data: CardSetDto }) {
+    const { name, type } = data;
     const uuid = randomUUID();
-    console.log(uuid);
     const newSet = await this.setsService.createSet({ name, type, uuid });
     return newSet;
   }

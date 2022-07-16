@@ -60,6 +60,7 @@ export interface EnemyDto extends CardDto {
   defense: number;
   health: number;
   victoryPoints?: number;
+  quantity: number;
 }
 
 export interface LocationDto extends CardDto {
@@ -70,16 +71,19 @@ export interface LocationDto extends CardDto {
   shadow: string;
   threat: number;
   victoryPoints?: number;
+  quantity: number;
 }
 
 export interface TreacheryDto extends CardDto {
   keywords: string[];
   text: string;
   shadow: string;
+  quantity: number;
 }
 
 export interface QuestDto extends CardDto {
   text: string;
   questPoints: number;
   victoryPoints?: number;
+  number: number;
 }

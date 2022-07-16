@@ -10,7 +10,7 @@ export class Card {
   @Column()
   name: string;
 
-  @ManyToOne(() => CardSet, (cardSet) => cardSet.cards)
+  @ManyToOne(() => CardSet, (cardSet) => cardSet.cards, { onDelete: 'CASCADE' })
   set: CardSet;
 
   @Column('text', { array: true })
@@ -161,6 +161,9 @@ export class Enemy extends Card {
 
   @Column({ nullable: true })
   victoryPoints: number;
+
+  @Column({ nullable: true })
+  quantity: number;
 }
 
 @ChildEntity()
@@ -185,6 +188,9 @@ export class Location extends Card {
 
   @Column({ nullable: true })
   victoryPoints: number;
+
+  @Column({ nullable: true })
+  quantity: number;
 }
 
 @ChildEntity()
@@ -197,6 +203,9 @@ export class Treachery extends Card {
 
   @Column({ nullable: true })
   shadow: string;
+
+  @Column({ nullable: true })
+  quantity: number;
 }
 
 @ChildEntity()
@@ -209,4 +218,7 @@ export class Quest extends Card {
 
   @Column({ nullable: true })
   victoryPoints: number;
+
+  @Column({ nullable: true })
+  quantity: number;
 }
