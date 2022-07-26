@@ -7,6 +7,7 @@ export interface CardDto {
   set: CardSet;
   traits: string[];
   cardNumber?: number;
+  cardImage?: string;
   type: string;
 }
 

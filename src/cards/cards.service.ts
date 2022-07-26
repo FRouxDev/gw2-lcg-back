@@ -48,6 +48,10 @@ export class CardsService {
     return newCard;
   }
 
+  async updateCard(uuid: string, card: Partial<CardDto>): Promise<void> {
+    await this.cardsRepository.update({ uuid }, { cardImage: card.cardImage });
+  }
+
   async deleteCard(uuid: string): Promise<void> {
     await this.cardsRepository.delete(uuid);
   }

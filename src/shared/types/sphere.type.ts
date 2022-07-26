@@ -1,7 +1,7 @@
 export enum Sphere {
-  TACTICS = 'tactics',
-  LEADERSHIP = 'leadership',
-  LORE = 'lore',
-  SPIRIT = 'spirit',
-  NEUTRAL = 'neutral',
+  TACTICS = 'Tactics',
+  LEADERSHIP = 'Leadership',
+  LORE = 'Lore',
+  SPIRIT = 'Spirit',
+  NEUTRAL = 'Neutral',
 }

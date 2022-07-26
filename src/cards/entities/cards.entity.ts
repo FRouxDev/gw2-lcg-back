@@ -19,10 +19,11 @@ export class Card {
   @Column({ nullable: true })
   cardNumber: number;
 
+  @Column({ nullable: true })
+  cardImage: string;
+
   @Column()
   type: string;
-
-  constructor() {}
 }
 
 @ChildEntity()
