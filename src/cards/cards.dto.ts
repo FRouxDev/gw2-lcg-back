@@ -84,6 +84,8 @@ export interface TreacheryDto extends CardDto {
 
 export interface QuestDto extends CardDto {
   text: string;
+  sideText?: string;
+  sideCardImage?: string;
   questPoints: number;
   victoryPoints?: number;
   number: number;

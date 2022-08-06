@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CardSet } from 'src/sets/entities/sets.entities';
+import { SetType } from 'src/shared/types/setType.type';
 import { Repository } from 'typeorm';
 import { CardDto } from './cards.dto';
 import { Card, Hero, Ally, Event, Attachment, Enemy, Location, Treachery, Quest } from './entities/cards.entity';
+import { keysToExclude, XMLToCardMapping } from './utils/XMLToCard.helpers';
+import { XMLCardDto } from './xmlCards.dto';
 
 @Injectable()
 export class CardsService {
@@ -57,7 +61,7 @@ export class CardsService {
   }
 
   async getAllCards(): Promise<Array<Card>> {
-    const cards: Array<Card> = await this.cardsRepository.find({ relations: ['set'] });
+    const cards: Array<Card> = await this.cardsRepository.find({ order: { name: 'ASC' }, relations: ['set'] });
     return cards;
   }
 
@@ -65,5 +69,42 @@ export class CardsService {
     const cardsRepository = this.getRepository(type);
     const cards: Array<Card> = await cardsRepository.find({ relations: ['set'] });
     return cards;
+  }
+
+  async getAllPlayerCards(): Promise<Array<Card>> {
+    const cards: Array<Card> = await this.cardsRepository.find({
+      relations: ['set'],
+      where: {
+        set: {
+          type: SetType.PLAYER,
+        },
+      },
+    });
+    return cards;
+  }
+
+  cardBuilder(xmlCard: XMLCardDto, cardSet: CardSet) {
+    const type: string = xmlCard.property.find((prop) => prop._name === 'Type')._value;
+
+    const newCard: Partial<CardDto> = {
+      uuid: xmlCard._id,
+      name: xmlCard._name,
+      set: cardSet,
+      cardImage: `./uploads/img/${cardSet.uuid}/${xmlCard._id}.jpg`,
+      type,
+    };
+
+    const usefulProperties = xmlCard.property.filter((prop) => !keysToExclude.includes(prop._name));
+
+    console.log(usefulProperties);
+    console.log(cardSet);
+
+    for (const property of usefulProperties) {
+      const propKey = XMLToCardMapping[property._name].key;
+      const propValue = XMLToCardMapping[property._name].process(property._value);
+      newCard[propKey] = propValue;
+    }
+
+    return newCard as CardDto;
   }
 }

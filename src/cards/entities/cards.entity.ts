@@ -215,6 +215,12 @@ export class Quest extends Card {
   text: string;
 
   @Column({ nullable: true })
+  sideText: string;
+
+  @Column({ nullable: true })
+  sideCardImage: string;
+
+  @Column({ nullable: true })
   questPoints: number;
 
   @Column({ nullable: true })

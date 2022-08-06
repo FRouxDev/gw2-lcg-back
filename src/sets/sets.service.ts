@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CardSet } from './entities/sets.entities';
 import { CardSetDto } from './sets.dto';
+import * as fs from 'fs/promises';
 @Injectable()
 export class SetsService {
   constructor(
@@ -12,6 +13,7 @@ export class SetsService {
 
   async createSet({ name, type, uuid }: CardSetDto): Promise<CardSet> {
     const newSet: CardSet = await this.setsRepository.save({ name, type, uuid });
+    await fs.mkdir(`./uploads/img/${uuid}`);
     return newSet;
   }
 
