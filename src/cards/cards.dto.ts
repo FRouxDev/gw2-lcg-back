@@ -90,3 +90,18 @@ export interface QuestDto extends CardDto {
   victoryPoints?: number;
   number: number;
 }
+
+export interface ObjectiveDto extends CardDto {
+  text: string;
+  keywords: string[];
+}
+
+export interface ObjectiveAllyDto extends CardDto {
+  unique: boolean;
+  keywords: string[];
+  text: string;
+  willpower: number;
+  attack: number;
+  defense: number;
+  health: number;
+}

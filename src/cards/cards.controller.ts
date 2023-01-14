@@ -7,7 +7,6 @@ import { diskStorage, memoryStorage } from 'multer';
 import { CardSetDto } from 'src/sets/sets.dto';
 import { SetsService } from 'src/sets/sets.service';
 import { XMLCardDto } from './xmlCards.dto';
-import { CardSet } from 'src/sets/entities/sets.entities';
 
 @Controller('cards')
 export class CardsController {
@@ -69,16 +68,16 @@ export class CardsController {
     const importContent = JSON.parse(file.buffer.toString());
 
     const { set } = importContent;
-    const newSet: CardSetDto = {
+    const newSetDto: CardSetDto = {
       uuid: set._id,
       name: set._name,
       type: set._setType,
     };
 
-    await this.setsService.createSet(newSet);
+    const newSet = await this.setsService.createSet(newSetDto);
     const cards: XMLCardDto[] = set.cards.card;
     for (const xmlCard of cards) {
-      const card = this.cardsService.cardBuilder(xmlCard, newSet as CardSet);
+      const card = this.cardsService.cardBuilder(xmlCard, newSet);
       await this.cardsService.createCard(card);
     }
   }

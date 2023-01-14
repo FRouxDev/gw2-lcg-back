@@ -1,14 +1,12 @@
 import { Card } from 'src/cards/entities/cards.entity';
 import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { SetType } from 'src/shared/types/setType.type';
+import { CardSetI18n } from './sets.i18n.entities';
 
 @Entity()
 export class CardSet {
   @PrimaryColumn()
   uuid: string;
-
-  @Column()
-  name: string;
 
   @Column({
     type: 'enum',
