@@ -9,8 +9,23 @@ import DEFAULT_PASSWORD from './data';
 import { CardsModule } from './cards/cards.module';
 import { SetsModule } from './sets/sets.module';
 import { CardSet } from './sets/entities/sets.entities';
-import { Ally, Attachment, Card, Event, Enemy, Hero, Location, Quest, Treachery } from './cards/entities/cards.entity';
+import {
+  Ally,
+  Attachment,
+  Card,
+  Event,
+  Enemy,
+  Hero,
+  Location,
+  Quest,
+  Treachery,
+  ObjectiveAlly,
+  Objective,
+} from './cards/entities/cards.entity';
 import { join } from 'path';
+import { GameModule } from './game/game.module';
+import { CardSetI18n } from './sets/entities/sets.i18n.entities';
+import { CardI18n } from './cards/entities/cards.i18n.entity';
 
 @Module({
   imports: [
@@ -28,12 +43,29 @@ import { join } from 'path';
       username: 'postgres',
       password: DEFAULT_PASSWORD,
       database: 'gw2lcg',
-      entities: [OctgnConfig, CardSet, Card, Hero, Ally, Event, Attachment, Enemy, Treachery, Location, Quest],
+      entities: [
+        OctgnConfig,
+        CardSet,
+        CardI18n,
+        CardSetI18n,
+        Card,
+        Hero,
+        Ally,
+        Event,
+        Attachment,
+        Enemy,
+        Treachery,
+        Location,
+        Quest,
+        Objective,
+        ObjectiveAlly,
+      ],
       synchronize: true,
     }),
     OctgnConfigModule,
     CardsModule,
     SetsModule,
+    GameModule,
   ],
   controllers: [],
   providers: [],

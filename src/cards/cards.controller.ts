@@ -7,7 +7,7 @@ import { diskStorage, memoryStorage } from 'multer';
 import { CardSetDto } from 'src/sets/sets.dto';
 import { SetsService } from 'src/sets/sets.service';
 import { XMLCardDto } from './xmlCards.dto';
-import { CardSet } from 'src/sets/entities/sets.entities';
+import { Languages } from 'src/config/i18n/lang';
 
 @Controller('cards')
 export class CardsController {
@@ -34,7 +34,15 @@ export class CardsController {
   @Post()
   async createCard(@Body() { data }: { data: CardDto }) {
     data.uuid = randomUUID();
-    const newCard = await this.cardsService.createCard(data);
+    const newCard = await this.cardsService.createCard(data, Languages.FR);
+    return newCard;
+  }
+
+  @Post(':lang')
+  async createCardWithLang(@Body() { data }: { data: CardDto }, @Param() params: { lang: Languages }) {
+    console.log(params);
+    data.uuid = randomUUID();
+    const newCard = await this.cardsService.createCard(data, params.lang);
     return newCard;
   }
 
@@ -43,11 +51,11 @@ export class CardsController {
     this.cardsService.deleteCard(params.uuid);
   }
 
-  @Post('upload/:uuid')
+  @Post('upload/:setUuid/:uuid')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/img',
+        destination: (req) => `./uploads/img/${req.params.setUuid}`,
         filename: (req: any, filename: any, cb: any) => {
           const finalName = `${req.params.uuid}.jpg`;
           cb(null, finalName);
@@ -69,17 +77,17 @@ export class CardsController {
     const importContent = JSON.parse(file.buffer.toString());
 
     const { set } = importContent;
-    const newSet: CardSetDto = {
+    const newSetDto: CardSetDto = {
       uuid: set._id,
       name: set._name,
       type: set._setType,
     };
 
-    await this.setsService.createSet(newSet);
+    const newSet = await this.setsService.createSet(newSetDto, Languages.FR);
     const cards: XMLCardDto[] = set.cards.card;
     for (const xmlCard of cards) {
-      const card = this.cardsService.cardBuilder(xmlCard, newSet as CardSet);
-      await this.cardsService.createCard(card);
+      const card = this.cardsService.cardBuilder(xmlCard, newSet);
+      await this.cardsService.createCard(card, Languages.FR);
     }
   }
 }

@@ -7,9 +7,6 @@ export class CardSet {
   @PrimaryColumn()
   uuid: string;
 
-  @Column()
-  name: string;
-
   @Column({
     type: 'enum',
     enum: SetType,

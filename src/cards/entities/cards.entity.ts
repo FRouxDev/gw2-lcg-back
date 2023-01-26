@@ -7,20 +7,11 @@ export class Card {
   @PrimaryColumn()
   uuid: string;
 
-  @Column()
-  name: string;
-
   @ManyToOne(() => CardSet, (cardSet) => cardSet.cards, { onDelete: 'CASCADE' })
   set: CardSet;
 
-  @Column('text', { array: true })
-  traits: string[];
-
   @Column({ nullable: true })
   cardNumber: number;
-
-  @Column({ nullable: true })
-  cardImage: string;
 
   @Column()
   type: string;
@@ -37,14 +28,8 @@ export class Hero extends Card {
   })
   sphere: Sphere;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   threat: number;
-
-  @Column({ nullable: true })
-  text: string;
 
   @Column({ nullable: true })
   willpower: number;
@@ -70,14 +55,8 @@ export class Ally extends Card {
   })
   sphere: Sphere;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   cost: number;
-
-  @Column({ nullable: true })
-  text: string;
 
   @Column({ nullable: true })
   willpower: number;
@@ -100,14 +79,8 @@ export class Event extends Card {
   })
   sphere: Sphere;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   cost: number;
-
-  @Column({ nullable: true })
-  text: string;
 }
 
 @ChildEntity()
@@ -121,14 +94,8 @@ export class Attachment extends Card {
   })
   sphere: Sphere;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   cost: number;
-
-  @Column({ nullable: true })
-  text: string;
 }
 
 @ChildEntity()
@@ -136,17 +103,8 @@ export class Enemy extends Card {
   @Column({ nullable: true })
   unique: boolean;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   engagement: number;
-
-  @Column({ nullable: true })
-  text: string;
-
-  @Column({ nullable: true })
-  shadow: string;
 
   @Column({ nullable: true })
   threat: number;
@@ -172,17 +130,8 @@ export class Location extends Card {
   @Column({ nullable: true })
   unique: boolean;
 
-  @Column('text', { array: true })
-  keywords: string[];
-
   @Column({ nullable: true })
   questPoints: number;
-
-  @Column({ nullable: true })
-  text: string;
-
-  @Column({ nullable: true })
-  shadow: string;
 
   @Column({ nullable: true })
   threat: number;
@@ -196,30 +145,12 @@ export class Location extends Card {
 
 @ChildEntity()
 export class Treachery extends Card {
-  @Column('text', { array: true })
-  keywords: string[];
-
-  @Column({ nullable: true })
-  text: string;
-
-  @Column({ nullable: true })
-  shadow: string;
-
   @Column({ nullable: true })
   quantity: number;
 }
 
 @ChildEntity()
 export class Quest extends Card {
-  @Column({ nullable: true })
-  text: string;
-
-  @Column({ nullable: true })
-  sideText: string;
-
-  @Column({ nullable: true })
-  sideCardImage: string;
-
   @Column({ nullable: true })
   questPoints: number;
 
@@ -228,4 +159,25 @@ export class Quest extends Card {
 
   @Column({ nullable: true })
   quantity: number;
+}
+
+@ChildEntity()
+export class Objective extends Card {}
+
+@ChildEntity()
+export class ObjectiveAlly extends Card {
+  @Column({ nullable: true })
+  unique: boolean;
+
+  @Column({ nullable: true })
+  willpower: number;
+
+  @Column({ nullable: true })
+  attack: number;
+
+  @Column({ nullable: true })
+  defense: number;
+
+  @Column({ nullable: true })
+  health: number;
 }

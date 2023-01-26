@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
 import { CardSetDto } from './sets.dto';
 import { SetsService } from './sets.service';
 import { randomUUID } from 'crypto';
+import { Languages } from 'src/config/i18n/lang';
 
 @Controller('sets')
 export class SetsController {
@@ -23,7 +24,15 @@ export class SetsController {
   async createSet(@Body() { data }: { data: CardSetDto }) {
     const { name, type } = data;
     const uuid = randomUUID();
-    const newSet = await this.setsService.createSet({ name, type, uuid });
+    const newSet = await this.setsService.createSet({ name, type, uuid }, Languages.FR);
+    return newSet;
+  }
+
+  @Post(':lang')
+  async createSetWithLang(@Body() { data }: { data: CardSetDto }, @Param() params: { lang: Languages }) {
+    const { name, type } = data;
+    const uuid = randomUUID();
+    const newSet = await this.setsService.createSet({ name, type, uuid }, params.lang);
     return newSet;
   }
 
