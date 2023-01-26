@@ -38,5 +38,6 @@ import { CardI18n } from './entities/cards.i18n.entity';
   ],
   controllers: [CardsController],
   providers: [CardsService],
+  exports: [CardsService],
 })
 export class CardsModule {}

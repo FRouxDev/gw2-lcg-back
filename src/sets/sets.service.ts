@@ -6,6 +6,9 @@ import { CardSetDto, PublicCardSetDto } from './sets.dto';
 import * as fs from 'fs/promises';
 import { CardSetI18n } from './entities/sets.i18n.entities';
 import { Languages, SetsI18nFields } from 'src/config/i18n/lang';
+import { CardsService } from 'src/cards/cards.service';
+import { Inject } from '@nestjs/common/decorators';
+import { forwardRef } from '@nestjs/common/utils';
 @Injectable()
 export class SetsService {
   constructor(
@@ -13,14 +16,16 @@ export class SetsService {
     private setsRepository: Repository<CardSet>,
     @InjectRepository(CardSetI18n)
     private setsI18nRepository: Repository<CardSetI18n>,
+    @Inject(forwardRef(() => CardsService))
+    private cardsService: CardsService,
   ) {}
 
-  async createSet({ name, type, uuid }: CardSetDto): Promise<CardSet> {
+  async createSet({ name, type, uuid }: CardSetDto, lang: Languages): Promise<CardSet> {
     const newSet: CardSet = await this.setsRepository.save({ type, uuid });
     await this.setsI18nRepository.save({
       set: newSet,
       field: SetsI18nFields.NAME,
-      lang: Languages.FR,
+      lang,
       value: name,
     });
     await fs.mkdir(`./uploads/img/${uuid}`);
@@ -39,7 +44,7 @@ export class SetsService {
 
   async getAllSets(): Promise<Array<PublicCardSetDto>> {
     const cardSets: Array<CardSet> = await this.setsRepository.find({ relations: ['cards'] });
-    const dataCardSets = await Promise.all(cardSets.map(async (cardSet) => this.buildSetI18n(cardSet)));
+    const dataCardSets = await Promise.all(cardSets.map(async (cardSet) => await this.buildSetI18n(cardSet)));
     return dataCardSets;
   }
 
@@ -54,6 +59,13 @@ export class SetsService {
       }
     }
 
-    return { ...cardSet, ...dataCardSet } as PublicCardSetDto;
+    const publicCardSet = { ...cardSet, ...dataCardSet } as PublicCardSetDto;
+    if (cardSet.cards) {
+      publicCardSet.cards = await Promise.all(
+        cardSet.cards.map(async (card) => await this.cardsService.buildCardI18n(card)),
+      );
+    }
+
+    return publicCardSet;
   }
 }

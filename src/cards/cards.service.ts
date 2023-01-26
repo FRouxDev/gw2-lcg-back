@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Inject } from '@nestjs/common/decorators';
+import { forwardRef } from '@nestjs/common/utils';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   AllyI18nFields,
@@ -15,6 +17,7 @@ import {
   TreacheryI18nFields,
 } from 'src/config/i18n/lang';
 import { CardSet } from 'src/sets/entities/sets.entities';
+import { SetsService } from 'src/sets/sets.service';
 import { SetType } from 'src/shared/types/setType.type';
 import { Repository } from 'typeorm';
 import { CardDto } from './cards.dto';
@@ -62,6 +65,8 @@ export class CardsService {
     private objectiveAllyRepository: Repository<ObjectiveAlly>,
     @InjectRepository(CardI18n)
     private cardsI18nRepository: Repository<CardI18n>,
+    @Inject(forwardRef(() => SetsService))
+    private setsService: SetsService,
   ) {}
 
   getRepository(entity: string): Repository<Card> {
@@ -98,9 +103,39 @@ export class CardsService {
     return i18nMap[entity];
   }
 
-  async createCard(card: CardDto): Promise<Card> {
+  async createCard(card: CardDto, lang: Languages): Promise<Card> {
     const cardsRepository = this.getRepository(card.type);
-    const newCard = cardsRepository.save(card);
+    const newCard: Card = await cardsRepository.save(card);
+    const i18nMap = this.getTranslationMap(card.type);
+
+    card.cardImage = `./uploads/img/${card.set.uuid}/${newCard.uuid}.jpg`;
+
+    for (const fieldKey in i18nMap) {
+      const field = i18nMap[fieldKey];
+      if (field === CardsI18nFields.KEYWORDS || field === CardsI18nFields.TRAITS) {
+        const valuesArray = card[field];
+        if (valuesArray) {
+          valuesArray.forEach(async (value) => {
+            await this.cardsI18nRepository.save({
+              card: newCard,
+              field,
+              value,
+              lang,
+            });
+          });
+        }
+      } else {
+        const value = card[field] as string;
+        if (value) {
+          await this.cardsI18nRepository.save({
+            card: newCard,
+            field,
+            value,
+            lang,
+          });
+        }
+      }
+    }
     return newCard;
   }
 
@@ -112,30 +147,9 @@ export class CardsService {
     await this.cardsRepository.delete(uuid);
   }
 
-  // TODO: Refacto
   async getAllCards(): Promise<Array<CardDto>> {
     const cards: Array<Card> = await this.cardsRepository.find({ relations: ['set'] });
-    const cardsData = await Promise.all(
-      cards.map(async (card) => {
-        const dataCard: Partial<CardDto> = {};
-        const i18nMap = this.getTranslationMap(card.type);
-        for (const fieldKey in i18nMap) {
-          const field = i18nMap[fieldKey];
-          if (field === CardsI18nFields.KEYWORDS || field === CardsI18nFields.TRAITS) {
-            const i18nValues = await this.cardsI18nRepository.find({ where: { card, field } });
-            if (i18nValues && i18nValues.length) {
-              dataCard[field] = i18nValues.map((entry) => entry.value);
-            }
-          } else {
-            const i18nValue = await this.cardsI18nRepository.findOneBy({ card, field });
-            if (i18nValue) {
-              dataCard[i18nValue.field] = i18nValue.value;
-            }
-          }
-        }
-        return { ...card, ...dataCard } as CardDto;
-      }),
-    );
+    const cardsData = await Promise.all(cards.map(async (card) => this.buildCardI18n(card)));
     return cardsData;
   }
 
@@ -155,6 +169,32 @@ export class CardsService {
       },
     });
     return cards;
+  }
+
+  async buildCardI18n(card: Card): Promise<CardDto> {
+    const dataCard: Partial<CardDto> = {};
+    const i18nMap = this.getTranslationMap(card.type);
+
+    for (const fieldKey in i18nMap) {
+      const field = i18nMap[fieldKey];
+      if (field === CardsI18nFields.KEYWORDS || field === CardsI18nFields.TRAITS) {
+        const i18nValues = await this.cardsI18nRepository.find({ where: { card, field } });
+        if (i18nValues && i18nValues.length) {
+          dataCard[field] = i18nValues.map((entry) => entry.value);
+        }
+      } else {
+        const i18nValue = await this.cardsI18nRepository.findOneBy({ card, field });
+        if (i18nValue) {
+          dataCard[i18nValue.field] = i18nValue.value;
+        }
+      }
+    }
+
+    const publicCard = { ...card, ...dataCard } as CardDto;
+    if (card.set) {
+      publicCard.set = await this.setsService.buildSetI18n(card.set);
+    }
+    return publicCard;
   }
 
   cardBuilder(xmlCard: XMLCardDto, cardSet: CardSet) {

@@ -1,10 +1,11 @@
 import { CardSet } from 'src/sets/entities/sets.entities';
+import { CardSetDto } from 'src/sets/sets.dto';
 import { Sphere } from 'src/shared/types/sphere.type';
 
 export interface CardDto {
   uuid?: string;
   name: string;
-  set: CardSet;
+  set: CardSet | CardSetDto;
   traits: string[];
   cardNumber?: number;
   cardImage?: string;

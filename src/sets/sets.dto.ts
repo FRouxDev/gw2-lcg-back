@@ -1,4 +1,4 @@
-import { Card } from 'src/cards/entities/cards.entity';
+import { CardDto } from 'src/cards/cards.dto';
 import { SetType } from 'src/shared/types/setType.type';
 
 export interface CardSetDto {
@@ -11,5 +11,5 @@ export interface PublicCardSetDto {
   uuid: string;
   type: SetType;
   name: string;
-  cards: Card[];
+  cards: CardDto[];
 }

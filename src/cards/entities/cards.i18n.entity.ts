@@ -7,7 +7,7 @@ export class CardI18n {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Card)
+  @ManyToOne(() => Card, { onDelete: 'CASCADE' })
   card: Card;
 
   @Column({
