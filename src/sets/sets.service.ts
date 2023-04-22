@@ -32,8 +32,16 @@ export class SetsService {
     return newSet;
   }
 
+  async updateSet(uuid: string, setName: string): Promise<void> {
+    const cardSet: CardSet = await this.setsRepository.findOneBy({ uuid });
+    const i18nValue = await this.setsI18nRepository.findOneBy({ set: cardSet, field: 'name' });
+    i18nValue.value = setName;
+    await this.setsI18nRepository.save(i18nValue);
+  }
+
   async deleteSet(uuid: string): Promise<void> {
     await this.setsRepository.delete(uuid);
+    await fs.rm(`./uploads/img/${uuid}`, { recursive: true });
   }
 
   async getSet(uuid: string): Promise<PublicCardSetDto> {

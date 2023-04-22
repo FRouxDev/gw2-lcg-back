@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Put } from '@nestjs/common';
 import { CardSetDto } from './sets.dto';
 import { SetsService } from './sets.service';
 import { randomUUID } from 'crypto';
@@ -18,6 +18,13 @@ export class SetsController {
   async allSets() {
     const sets = await this.setsService.getAllSets();
     return { sets };
+  }
+
+  @Put()
+  async updateSet(@Body() { data }: { data: { uuid: string; setName: string } }) {
+    const { uuid, setName } = data;
+    await this.setsService.updateSet(uuid, setName);
+    return { update: 'OK' };
   }
 
   @Post()

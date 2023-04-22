@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CardDto } from './cards.dto';
 import { randomUUID } from 'crypto';
 import { CardsService } from './cards.service';
@@ -19,6 +19,12 @@ export class CardsController {
     return { cards };
   }
 
+  @Get('/simplified')
+  async getAllSimplifiedCards() {
+    const cards = await this.cardsService.getAllSimplifiedCards(Languages.FR);
+    return { cards };
+  }
+
   @Get('/types/:type')
   async getAllCardsFromType(@Param() params) {
     const cards = await this.cardsService.getAllCardsFromType(params.type);
@@ -31,6 +37,12 @@ export class CardsController {
     return { cards };
   }
 
+  @Get(':uuid')
+  async getSingleCard(@Param() params) {
+    const card = await this.cardsService.getSingleCard(params.uuid);
+    return { card };
+  }
+
   @Post()
   async createCard(@Body() { data }: { data: CardDto }) {
     data.uuid = randomUUID();
@@ -40,10 +52,20 @@ export class CardsController {
 
   @Post(':lang')
   async createCardWithLang(@Body() { data }: { data: CardDto }, @Param() params: { lang: Languages }) {
-    console.log(params);
     data.uuid = randomUUID();
     const newCard = await this.cardsService.createCard(data, params.lang);
     return newCard;
+  }
+
+  @Put()
+  async updateCard(@Body() { data }: { data: CardDto }) {
+    const updatedCard = await this.cardsService.updateCard(data, Languages.FR);
+    return updatedCard;
+  }
+
+  @Delete('reset')
+  resetCards() {
+    this.cardsService.resetCards();
   }
 
   @Delete(':uuid')
@@ -55,7 +77,10 @@ export class CardsController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: (req) => `./uploads/img/${req.params.setUuid}`,
+        destination: (req: any, filename: any, cb: any) => {
+          const finalDirName = `./uploads/img/${req.params.setUuid}`;
+          cb(null, finalDirName);
+        },
         filename: (req: any, filename: any, cb: any) => {
           const finalName = `${req.params.uuid}.jpg`;
           cb(null, finalName);
@@ -64,7 +89,7 @@ export class CardsController {
     }),
   )
   uploadFile(@UploadedFile() file: Express.Multer.File, @Param() params): void {
-    this.cardsService.updateCard(params.uuid, { cardImage: file.filename });
+    this.cardsService.createCardRef(params.uuid, params.setUuid, Languages.FR);
   }
 
   @Post('import')

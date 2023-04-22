@@ -38,6 +38,7 @@ export enum EventI18nFields {
   NAME = 'name',
   IMAGE = 'cardImage',
   KEYWORDS = 'keywords',
+  TRAITS = 'traits',
   TEXT = 'text',
 }
 
