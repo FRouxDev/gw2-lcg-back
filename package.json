@@ -1,6 +1,6 @@
 {
   "name": "gw2-lcg-back",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "",
   "author": "",
   "private": true,
@@ -39,7 +39,7 @@
     "typeorm": "^0.3.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^8.0.0",
+    "@nestjs/cli": "^9.4.1",
     "@types/express": "^4.17.13",
     "@types/jest": "27.4.1",
     "@types/multer": "^1.4.7",
